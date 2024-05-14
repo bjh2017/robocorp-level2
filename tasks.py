@@ -54,6 +54,12 @@ def fill_and_submit_order_form(order):
     page.fill("#address", order['Address'])
     page.click("#order")
 
+    while True:
+        if page.is_visible(".alert.alert-danger"):
+            page.click("#order")
+        else: 
+            break
+
 def fill_order_form_with_csv_data():
     # tables = Tables()
     # table = tables.read_table_from_csv("orders.csv", True, )
@@ -76,22 +82,22 @@ def embed_screenshot_to_receipt(screenshot, pdf_file):
 def close_annoying_modal():
     page = browser.page()
     page.click("button:text('OK')")
+    
 
 def new_order():
     page = browser.page()
     page.click("#order-another")
     
 def screenshot_robot(order):
-    path = "output/orders/order-{order}.png"
+    path = "output/orders/order-" + order + ".png"
     page = browser.page()
-    page
     page.screenshot(path=path)
 
 def store_receipt_as_pdf(order):
     page = browser.page()
-    receipt = page.locator("#receipt").inner_html
+    receipt = page.locator("#receipt").inner_html()
 
-    path = "output/pdf-orders/order-{order}.pdf"
+    path = "output/pdf-orders/order-" + order + ".pdf"
     pdf = PDF()
     pdf.html_to_pdf(receipt, path)
 
