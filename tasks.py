@@ -5,6 +5,7 @@ import csv
 from RPA.HTTP import HTTP
 from RPA.PDF import PDF
 from RPA.Tables import Tables
+from RPA.Archive import Archive
 
 @task
 def order_robots_from_RobotSpareBin():
@@ -23,7 +24,7 @@ def order_robots_from_RobotSpareBin():
     log_in()
     navigate_to_orders_tab()
     fill_order_form_with_csv_data()
-    archive_orders_receipts()
+    archive_receipts()
     log_out()
     
 def open_robot_order_website():
@@ -64,11 +65,13 @@ def fill_order_form_with_csv_data():
         
         for row in reader:
             fill_and_submit_order_form(row)
-            collect_results(row['Order number'])
-            export_receipt_as_pdf(row['Order number'])
+            screenshot_robot(row['Order number'])
+            store_receipt_as_pdf(row['Order number'])
             new_order()
             close_annoying_modal()
 
+def embed_screenshot_to_receipt(screenshot, pdf_file):
+    """"""
 
 def close_annoying_modal():
     page = browser.page()
@@ -78,12 +81,13 @@ def new_order():
     page = browser.page()
     page.click("#order-another")
     
-def collect_results(order):
+def screenshot_robot(order):
     path = "output/orders/order-{order}.png"
     page = browser.page()
+    page
     page.screenshot(path=path)
 
-def export_receipt_as_pdf(order):
+def store_receipt_as_pdf(order):
     page = browser.page()
     receipt = page.locator("#receipt").inner_html
 
@@ -91,8 +95,13 @@ def export_receipt_as_pdf(order):
     pdf = PDF()
     pdf.html_to_pdf(receipt, path)
 
-def archive_orders_receipts():
+def archive_receipts():
     """"""
+    lib = Archive()
+    lib.archive_folder_with_zip('./output/pdf-orders', 'receipts.zip', recursive=True)
+    files = lib.list_archive('receipts.zip')
+    for file in files:
+        print(file)
 
 def log_out():
     page = browser.page()
