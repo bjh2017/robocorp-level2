@@ -61,11 +61,6 @@ def fill_and_submit_order_form(order):
             break
 
 def fill_order_form_with_csv_data():
-    # tables = Tables()
-    # table = tables.read_table_from_csv("orders.csv", True, )
-    # orders = tables.export_table(table)
-    # orders_list = [{k: v for k, v in row.items()} for row in orders]
-    # print(orders_list)
     with open("orders.csv", newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         
